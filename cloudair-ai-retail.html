@@ -1,0 +1,445 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body>
+<title>클라우드에어 AI 구매대행</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root {
+    --ground: #F4F6F9;
+    --surface: #FFFFFF;
+    --surface-2: #EBEFF5;
+    --ink: #17233A;
+    --ink-2: #4A5570;
+    --muted: #7C869E;
+    --line: #D9DFE9;
+    --accent: #1F4FD8;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #E6ECFB;
+    --navy: #17233A;
+    --navy-ink: #F4F6F9;
+    --ok: #1E8E5A;
+    --ok-soft: #E3F4EB;
+    --warn-soft: #FFF3D6;
+    --warn-ink: #7A5200;
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0F1521; --surface: #171F2E; --surface-2: #1F2939;
+      --ink: #EEF2F8; --ink-2: #B8C1D3; --muted: #8A95AB; --line: #2C3648;
+      --accent: #6B8DFF; --accent-ink: #0F1521; --accent-soft: #1E2A48;
+      --navy: #0B1020; --navy-ink: #EEF2F8;
+      --ok: #4CC08A; --ok-soft: #14301F; --warn-soft: #3A2E0E; --warn-ink: #F3C96B;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0F1521; --surface: #171F2E; --surface-2: #1F2939;
+    --ink: #EEF2F8; --ink-2: #B8C1D3; --muted: #8A95AB; --line: #2C3648;
+    --accent: #6B8DFF; --accent-ink: #0F1521; --accent-soft: #1E2A48;
+    --navy: #0B1020; --navy-ink: #EEF2F8;
+    --ok: #4CC08A; --ok-soft: #14301F; --warn-soft: #3A2E0E; --warn-ink: #F3C96B;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: "IBM Plex Sans KR", "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    font-size: 15px; line-height: 1.65; -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .mono { font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace; font-variant-numeric: tabular-nums; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding-inline: 20px; }
+  h1, h2, h3 { margin: 0; text-wrap: balance; line-height: 1.25; letter-spacing: -0.01em; }
+  h2 { font-size: 24px; font-weight: 700; }
+  h3 { font-size: 16px; font-weight: 600; }
+  p { margin: 0; }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+  .sec { padding-block: 56px; }
+  .sec-head { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; max-width: 640px; }
+  .sec-head p { color: var(--ink-2); }
+
+  /* nav */
+  .nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 60px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; text-decoration: none; }
+  .brand .dot { width: 26px; height: 26px; border-radius: 7px; background: var(--accent); display: grid; place-items: center; color: var(--accent-ink); font-family: "IBM Plex Mono", monospace; font-size: 12px; font-weight: 600; }
+  .brand small { font-weight: 500; color: var(--muted); margin-left: 4px; }
+  .navlinks { display: flex; gap: 22px; font-size: 14px; color: var(--ink-2); }
+  .navlinks a { text-decoration: none; }
+  .navlinks a:hover { color: var(--ink); }
+  @media (max-width: 720px) { .navlinks { display: none; } }
+
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; text-decoration: none; border: 1px solid transparent; cursor: pointer; transition: transform .12s ease, background .12s ease; white-space: nowrap; }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { transform: translateY(-1px); }
+  .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+  .btn-ghost:hover { background: var(--surface-2); }
+  .btn-lg { padding: 14px 22px; font-size: 15px; border-radius: 10px; }
+  .btn svg { width: 16px; height: 16px; }
+
+  /* hero */
+  .hero { background: var(--navy); color: var(--navy-ink); padding-block: 64px 56px; position: relative; overflow: hidden; }
+  .hero::after { content: ""; position: absolute; inset: auto -10% -60% auto; width: 520px; height: 520px; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 35%, transparent), transparent); pointer-events: none; }
+  .hero .wrap { display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: center; position: relative; }
+  @media (max-width: 800px) { .hero .wrap { grid-template-columns: 1fr; } }
+  .hero .eyebrow { color: #9DB4FF; }
+  .hero h1 { font-size: clamp(30px, 4.6vw, 46px); font-weight: 700; margin: 14px 0 16px; }
+  .hero h1 em { font-style: normal; color: #9DB4FF; }
+  .hero .lede { font-size: 16px; color: color-mix(in srgb, var(--navy-ink) 78%, transparent); max-width: 52ch; }
+  .hero .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+  .hero .btn-ghost { color: var(--navy-ink); border-color: color-mix(in srgb, var(--navy-ink) 30%, transparent); }
+  .hero .btn-ghost:hover { background: color-mix(in srgb, var(--navy-ink) 10%, transparent); }
+  .proof { display: grid; gap: 10px; }
+  .proof .card { background: color-mix(in srgb, var(--navy-ink) 7%, transparent); border: 1px solid color-mix(in srgb, var(--navy-ink) 14%, transparent); border-radius: var(--radius); padding: 14px 16px; display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; }
+  .proof .k { font-family: "IBM Plex Mono", monospace; font-size: 20px; font-weight: 600; color: #9DB4FF; min-width: 64px; }
+  .proof .t { font-size: 14px; }
+  .proof .t b { display: block; font-weight: 600; }
+  .proof .t span { color: color-mix(in srgb, var(--navy-ink) 65%, transparent); font-size: 13px; }
+
+  /* AI grid */
+  .toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .seg { display: inline-flex; background: var(--surface-2); border-radius: 8px; padding: 3px; }
+  .seg button { border: 0; background: transparent; padding: 7px 14px; border-radius: 6px; font: inherit; font-size: 13px; font-weight: 600; color: var(--ink-2); cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  .seg button:focus-visible { outline: 2px solid var(--accent); }
+  .fxnote { font-size: 13px; color: var(--muted); }
+  .fxnote b { color: var(--ink-2); font-weight: 600; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+  .ai { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .ai-head { display: flex; align-items: center; gap: 12px; }
+  .logo { width: 44px; height: 44px; border-radius: 10px; display: grid; place-items: center; font-weight: 700; font-size: 17px; color: #fff; flex-shrink: 0; letter-spacing: -0.02em; }
+  .ai-head h3 { font-size: 17px; }
+  .ai-head .cat { font-size: 12.5px; color: var(--muted); }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { font-size: 11.5px; font-weight: 600; padding: 3px 8px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); }
+  .tag.ok { background: var(--ok-soft); color: var(--ok); }
+  .plans { display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .plan { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; padding: 10px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+  .plan:last-child { border-bottom: 0; }
+  .plan .n { font-weight: 600; font-size: 14px; }
+  .plan .d { grid-column: 1; font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+  .plan .krw { grid-column: 2; grid-row: 1; text-align: right; font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; font-weight: 600; font-size: 15px; white-space: nowrap; }
+  .plan .krw small { display: block; font-weight: 500; font-size: 11.5px; color: var(--muted); }
+  .plan .krw.ask { font-family: inherit; font-size: 13px; color: var(--accent); }
+  .plan.hi .n::after { content: "추천"; font-size: 10.5px; font-weight: 700; color: var(--accent); background: var(--accent-soft); padding: 2px 6px; border-radius: 999px; margin-left: 6px; vertical-align: 2px; }
+  .ai-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: auto; padding-top: 4px; }
+  .ai-foot a.btn { padding: 8px 12px; font-size: 13px; }
+  .ai-foot .src { font-size: 12px; color: var(--muted); text-decoration: none; }
+  .ai-foot .src:hover { color: var(--ink-2); text-decoration: underline; }
+  .notice { margin-top: 16px; font-size: 13px; color: var(--ink-2); background: var(--warn-soft); border-radius: var(--radius); padding: 12px 16px; display: grid; gap: 4px; }
+  .notice b { color: var(--warn-ink); }
+
+  /* compare table */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 560px; }
+  th, td { text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  th { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; background: var(--surface-2); }
+  td:first-child { font-weight: 600; white-space: nowrap; width: 120px; }
+  td.asis { color: var(--muted); }
+  td.tobe { color: var(--ink); font-weight: 500; }
+  td.tobe::before { content: "→ "; color: var(--accent); font-weight: 700; }
+
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin-top: 24px; }
+  .feat { padding: 18px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); }
+  .feat h3 { margin-bottom: 6px; }
+  .feat p { font-size: 13.5px; color: var(--ink-2); }
+
+  /* process */
+  .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; counter-reset: step; }
+  @media (max-width: 900px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .steps { grid-template-columns: 1fr; } }
+  .step { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 16px; position: relative; }
+  .step::before { counter-increment: step; content: counter(step, decimal-leading-zero); font-family: "IBM Plex Mono", monospace; font-weight: 600; color: var(--accent); font-size: 13px; }
+  .step h3 { font-size: 15px; margin: 6px 0 6px; }
+  .step p { font-size: 13px; color: var(--ink-2); }
+
+  /* support */
+  .support { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+  .sup { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+  .sup h3 { margin-bottom: 8px; }
+  .sup ul { margin: 0; padding-left: 18px; font-size: 13.5px; color: var(--ink-2); display: grid; gap: 4px; }
+
+  /* contact */
+  .contact { background: var(--navy); color: var(--navy-ink); border-radius: 18px; padding: 44px 36px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: center; }
+  @media (max-width: 760px) { .contact { grid-template-columns: 1fr; padding: 32px 22px; } }
+  .contact h2 { font-size: 26px; }
+  .contact p { color: color-mix(in srgb, var(--navy-ink) 75%, transparent); margin-top: 8px; }
+  .contact .types { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .contact .types span { font-size: 12.5px; padding: 5px 10px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--navy-ink) 25%, transparent); }
+  .contact .box { background: color-mix(in srgb, var(--navy-ink) 7%, transparent); border: 1px solid color-mix(in srgb, var(--navy-ink) 14%, transparent); border-radius: 12px; padding: 22px; display: grid; gap: 14px; }
+  .contact .box .btn-primary { justify-content: center; }
+  .contact dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 14px; }
+  .contact dt { color: color-mix(in srgb, var(--navy-ink) 60%, transparent); }
+  .contact dd { margin: 0; }
+  .contact dd a { text-decoration: none; }
+  .contact dd a:hover { text-decoration: underline; }
+  .foot { padding-block: 28px; font-size: 12.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <span class="dot">CA</span>CloudAir <small>AI 구매대행</small>
+    </a>
+    <nav class="navlinks">
+      <a href="#ai">AI 목록·가격</a>
+      <a href="#why">서비스 비교</a>
+      <a href="#process">도입 절차</a>
+      <a href="#support">지원 범위</a>
+    </nav>
+    <a class="btn btn-primary" href="https://cloudair.notion.site/ai-retail-support" target="_blank" rel="noopener">
+      서비스 문의
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 12 4M6 4h6v6"/></svg>
+    </a>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">AI SaaS 구매 · 운영 대행</p>
+      <h1>해외 AI 도구, <em>원화 세금계산서</em>로 바로 쓰게 해드립니다</h1>
+      <p class="lede">학교·지자체·공공기관이 Claude, ChatGPT, Cursor 같은 해외 AI SaaS를 해외 카드나 영문 가입 없이 도입할 수 있도록, 계정 공급부터 결제·증빙·운영까지 클라우드에어가 대신합니다.</p>
+      <div class="cta">
+        <a class="btn btn-primary btn-lg" href="https://cloudair.notion.site/ai-retail-support" target="_blank" rel="noopener">
+          견적·도입 문의하기
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 12 4M6 4h6v6"/></svg>
+        </a>
+        <a class="btn btn-ghost btn-lg" href="#ai">AI별 가격 보기</a>
+      </div>
+    </div>
+    <div class="proof">
+      <div class="card"><span class="k">KRW</span><div class="t"><b>국내 원화 결제 · 세금계산서</b><span>외화 결제, 해외 카드 발급 불필요</span></div></div>
+      <div class="card"><span class="k">100%</span><div class="t"><b>법적 증빙 처리</b><span>인보이스·회계 증빙 누락 없음</span></div></div>
+      <div class="card"><span class="k">1일</span><div class="t"><b>문의 답변 기준</b><span>영업일 기준 1일 이내 회신</span></div></div>
+      <div class="card"><span class="k">월/분기/연</span><div class="t"><b>기간제 플랜</b><span>계정 단위 공급, 회수·재배정 가능</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="ai">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">구매 가능한 AI</p>
+      <h2>AI별 가격 정책</h2>
+      <p>각 서비스의 공식 요금제를 원화로 환산해 정리했습니다. 실제 공급가는 기관 규모·수량·이용 기간에 따라 견적으로 안내드립니다.</p>
+    </div>
+
+    <div class="toolbar">
+      <div class="seg" role="group" aria-label="결제 주기">
+        <button type="button" id="cycle-month" aria-pressed="true" data-cycle="m">월 결제 기준</button>
+        <button type="button" id="cycle-year" aria-pressed="false" data-cycle="y">연 결제 기준 (월 환산)</button>
+      </div>
+      <p class="fxnote">환율 <b class="mono">1 USD = 1,354 KRW</b> (2026.09.15 매매기준율) · 1인 기준 · <b>VAT 별도</b></p>
+    </div>
+
+    <div class="grid" id="ai-grid"></div>
+
+    <div class="notice">
+      <b>가격 안내</b>
+      <span>표기 금액은 각 서비스 공식 사이트의 정가를 환율로 단순 환산한 참고값이며, 클라우드에어 공급가(대행 수수료·부가세 포함)는 견적서로 별도 안내됩니다. 환율 변동 및 본사 정책에 따라 변경될 수 있습니다.</span>
+      <span>일부 교육용 저가 라이선스는 본사 운영 정책에 따라 사전 안내 없이 일시적으로 주문이 제한될 수 있으며, 이로 인해 납기 일정이 변경될 수 있습니다.</span>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="why" style="background: var(--surface-2);">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">제공 서비스</p>
+      <h2>기존 방식과 무엇이 달라지나</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>구분</th><th>기존 방식 (AS-IS)</th><th>클라우드에어 (TO-BE)</th></tr></thead>
+        <tbody>
+          <tr><td>결제 수단</td><td class="asis">해외 카드 발급 및 외화 결제</td><td class="tobe">국내 원화 결제 (세금계산서)</td></tr>
+          <tr><td>가입/절차</td><td class="asis">복잡한 영문 가입 및 직접 설정</td><td class="tobe">간편 요청 및 즉시 사용</td></tr>
+          <tr><td>비용 증빙</td><td class="asis">증빙 누락 및 회계 처리의 어려움</td><td class="tobe">투명한 법적 증빙 (100% 처리)</td></tr>
+          <tr><td>운영 관리</td><td class="asis">관리 부실 및 개별 대응 필요</td><td class="tobe">전문 운영 대행 및 통합 관리</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="features">
+      <div class="feat"><h3>AI SaaS 계정 즉시 공급</h3><p>Claude, Cursor 등 글로벌 최고 성능의 AI 도구를 기관 보안 정책에 맞춰 즉시 사용할 수 있도록 제공합니다.</p></div>
+      <div class="feat"><h3>복잡한 해외 결제 제로화</h3><p>외화 결제, 해외 카드 등록, 인보이스 처리 등 번거로운 행정 절차를 대행하며 모든 비용은 원화(KRW) 세금계산서로 처리합니다.</p></div>
+      <div class="feat"><h3>End-to-End 매니지먼트</h3><p>계정 생성부터 초기 세팅, 사용 가이드 전달, 기간 만료 알림 및 회수까지 계정의 전 생애주기를 관리합니다.</p></div>
+      <div class="feat"><h3>유연한 리소스 배정</h3><p>인사이동이나 프로젝트 종료 시 발생하는 유휴 계정을 회수해 필요한 곳에 재배정, 예산 낭비를 방지합니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="process">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">표준 프로세스</p>
+      <h2>도입 절차</h2>
+      <p>기관의 기존 구매 가이드라인을 준수하는 투명한 운영 절차를 지향합니다.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><h3>도입 컨설팅 및 요청</h3><p>기관별 필요 수량 및 이용 기간(월/분기/연) 확정</p></div>
+      <div class="step"><h3>신속한 계정 셋업</h3><p>서비스별 최적화 환경·보안 세팅 완료 후 계정 정보 전달</p></div>
+      <div class="step"><h3>현업 즉시 활용</h3><p>별도 설정 없이 전달받은 즉시 AI 도구 활용 시작</p></div>
+      <div class="step"><h3>스마트 운영 관리</h3><p>사용 기간 모니터링 및 정기 리포트(옵션) 제공</p></div>
+      <div class="step"><h3>회수 및 재배정</h3><p>기간 종료 후 안전한 데이터 소거 및 타 사용자 재배정</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="support" style="background: var(--surface-2);">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">운영 및 지원 범위</p>
+      <h2>담당자가 신경 쓸 것이 없는 밀착 관리</h2>
+    </div>
+    <div class="support">
+      <div class="sup"><h3>인프라 / 결제</h3><ul><li>계정 생성</li><li>해외 구독 결제 대행</li><li>원화 증빙 처리</li></ul></div>
+      <div class="sup"><h3>기술 지원</h3><ul><li>초기 로그인 가이드</li><li>도구별 기본 사용법 안내</li><li>접속 장애 대응</li></ul></div>
+      <div class="sup"><h3>라이선스 관리</h3><ul><li>구독 갱신 관리</li><li>사용 현황 모니터링</li><li>만료 전 사전 알림</li></ul></div>
+      <div class="sup"><h3>운영 효율화</h3><ul><li>기간제 플랜(월/분기/연) 선택</li><li>계정 단위 공급으로 유연성 극대화</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="contact">
+  <div class="wrap">
+    <div class="contact">
+      <div>
+        <p class="eyebrow" style="color:#9DB4FF">문의하기</p>
+        <h2>견적, 기술 지원, 서류 요청까지<br>한 곳에서</h2>
+        <p>24시간 접수 가능하며, 영업일 기준 1일 이내 답변드립니다. 긴급 장애는 전화 문의를 권장합니다.</p>
+        <div class="types">
+          <span>구매 / 견적</span><span>기술 지원</span><span>서류 요청</span><span>파트너십</span><span>기타</span>
+        </div>
+      </div>
+      <div class="box">
+        <a class="btn btn-primary btn-lg" href="https://cloudair.notion.site/ai-retail-support" target="_blank" rel="noopener">
+          서비스 문의 페이지 열기
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 12 4M6 4h6v6"/></svg>
+        </a>
+        <dl>
+          <dt>담당</dt><dd>신선우 · 클라우드에어 AI 구매대행 서비스</dd>
+          <dt>전화</dt><dd><a href="tel:010-7997-9048" class="mono">010-7997-9048</a></dd>
+          <dt>이메일</dt><dd><a href="mailto:swshin@cloud-air.kr">swshin@cloud-air.kr</a></dd>
+          <dt>지원</dt><dd><a href="mailto:support@cloud-air.kr">support@cloud-air.kr</a></dd>
+        </dl>
+      </div>
+    </div>
+    <div class="foot">
+      <span>© CloudAir(클라우드에어) · AI SaaS 구매·운영 대행 서비스</span>
+      <span>가격은 각 서비스 공식 요금제 기준 환산 참고값 · 2026.09 갱신</span>
+    </div>
+  </div>
+</section>
+
+<script>
+  const FX = 1354;
+  const SUPPORT = "https://cloudair.notion.site/ai-retail-support";
+  // usd: 월 결제 정가, usdY: 연 결제 시 월 환산 정가 (없으면 월과 동일). krw: 원화 정가 서비스. ask: 견적 문의.
+  const AIS = [
+    { name: "Claude", ko: "클로드", cat: "Anthropic · 범용 AI 어시스턴트 / 코딩", color: "#C96A3B", mark: "Cl", src: "https://claude.com/pricing",
+      tags: ["문서·분석", "Claude Code 포함", "교육기관 플랜"],
+      plans: [
+        { n: "Pro", d: "개인용 · 더 많은 사용량, Claude Code 포함", usd: 20, usdY: 17, hi: true },
+        { n: "Max", d: "개인용 · Pro 대비 5x / 20x 사용량", usd: 100, usdY: 100, from: true },
+        { n: "Team 표준", d: "팀 · SSO, 엔터프라이즈 검색", usd: 25, usdY: 20 },
+        { n: "Team 프리미엄", d: "팀 · Claude Code 사용량 확대", usd: 125, usdY: 100 },
+        { n: "Enterprise / 교육기관", d: "역할 기반 접근, 감사 로그, 데이터 보존 정책", ask: true },
+      ] },
+    { name: "ChatGPT", ko: "챗GPT", cat: "OpenAI · 범용 AI 어시스턴트", color: "#0F8F6E", mark: "G", src: "https://chatgpt.com/pricing/",
+      tags: ["문서·이미지·음성", "Business 2인 이상", "Edu 플랜"],
+      plans: [
+        { n: "Go", d: "개인용 · 더 많은 메시지·업로드", usd: 8, usdY: 8 },
+        { n: "Plus", d: "개인용 · 고급 추론, 딥리서치, 프로젝트", usd: 20, usdY: 20, hi: true },
+        { n: "Pro", d: "개인용 · Plus 대비 5x 사용량, 프로 추론", usd: 200, usdY: 200 },
+        { n: "Business", d: "팀 · 최소 2인, 관리 콘솔·데이터 보호", usd: 30, usdY: 25 },
+        { n: "Enterprise / Edu", d: "기관·대학 · 최고 수준 보안·관리 기능", ask: true },
+      ] },
+    { name: "Cursor", ko: "커서", cat: "Anysphere · AI 코드 에디터", color: "#1F1F23", mark: "Cu", src: "https://cursor.com/pricing",
+      tags: ["개발팀", "에이전트 코딩", "SSO·감사 로그"],
+      plans: [
+        { n: "Pro", d: "개인용 · 확장된 에이전트 사용량, 프론티어 모델", usd: 20, usdY: 16, hi: true },
+        { n: "Pro+", d: "개인용 · 매일 에이전트를 쓰는 개발자", usd: 60, usdY: 60 },
+        { n: "Ultra", d: "개인용 · 파워 유저용 최대 사용량", usd: 200, usdY: 200 },
+        { n: "Teams", d: "팀 · 통합 결제, 사용량 분석, 프라이버시 모드, SSO", usd: 40, usdY: 40 },
+        { n: "Enterprise", d: "풀링 사용량, 인보이스/PO 결제, SCIM", ask: true },
+      ] },
+    { name: "Gemini", ko: "제미나이", cat: "Google · AI 어시스턴트 + Google 앱 연동", color: "#2E63D9", mark: "Ge", src: "https://gemini.google/subscriptions/",
+      tags: ["Gmail·Docs 연동", "영상 생성", "Workspace"],
+      plans: [
+        { n: "Google AI Plus", d: "개인용 · 무료 대비 2x 한도, 400GB 저장", usd: 4.99, usdY: 4.99 },
+        { n: "Google AI Pro", d: "개인용 · Gemini 3 Pro, Deep Search, 5TB", usd: 19.99, usdY: 19.99, hi: true },
+        { n: "Google AI Ultra", d: "개인용 · 최대 20x 한도, Deep Think, 30TB", usd: 99.99, usdY: 99.99, from: true },
+        { n: "Gemini Enterprise (Business)", d: "기관 · 좌석당, 보안 데이터 커넥터, 최대 300석", usd: 21, usdY: 21, from: true },
+        { n: "Gemini for Education", d: "학교·대학 · Workspace for Education 연계", ask: true },
+      ] },
+    { name: "GitHub Copilot", ko: "깃허브 코파일럿", cat: "GitHub · AI 코딩 어시스턴트", color: "#24292F", mark: "Co", src: "https://github.com/features/copilot/plans",
+      tags: ["IDE·CLI", "코드 리뷰", "IP 면책"],
+      plans: [
+        { n: "Pro", d: "개인용 · 무제한 자동완성, 클라우드 에이전트", usd: 10, usdY: 10, hi: true },
+        { n: "Pro+", d: "개인용 · 프리미엄 모델, Pro 대비 4x+ 사용량", usd: 39, usdY: 39 },
+        { n: "Max", d: "개인용 · 신모델 우선 접근, Pro+ 대비 2.9x+", usd: 100, usdY: 100 },
+        { n: "Business", d: "조직 · 라이선스·정책 관리, IP 면책", ask: true },
+        { n: "Enterprise", d: "조직 · 코드베이스 인덱싱, 맞춤 모델, SAML SSO", ask: true },
+      ] },
+    { name: "미리캔버스", ko: "MiriCanvas", cat: "미리디 · 디자인 · 발표자료 제작", color: "#12B2B0", mark: "미", src: "https://www.miricanvas.com/pricing",
+      tags: ["원화 정가", "학교·학생 단체 발급", "AI 디자인 도구"],
+      plans: [
+        { n: "Pro", d: "개인·팀 · 프리미엄 템플릿 무제한, 10GB, AI 도구", krw: 14900, krwY: 13400, hi: true },
+        { n: "Enterprise", d: "기업·기관 · 규모별 유연한 가격, 도입 지원", ask: true },
+        { n: "학교 / 학생 단체 발급", d: "교육기관 · 아이디 단체 발급 신청", ask: true },
+      ] },
+    { name: "클래스GPT", ko: "교육용 ChatGPT", cat: "교육기관용 ChatGPT 도입 패키지", color: "#5B4DD6", mark: "클", src: SUPPORT,
+      tags: ["학교·교육청", "학급 단위 공급", "교육용 저가 라이선스"],
+      plans: [
+        { n: "교육기관 라이선스", d: "학급·학교 단위 · 수량·기간에 따라 견적 산정", ask: true },
+      ] },
+  ];
+
+  const fmt = n => Math.round(n / 100) * 100;
+  const won = n => n.toLocaleString("ko-KR") + "원";
+  let cycle = "m";
+
+  function render() {
+    const grid = document.getElementById("ai-grid");
+    grid.innerHTML = AIS.map(a => `
+      <article class="ai">
+        <div class="ai-head">
+          <div class="logo" style="background:${a.color}">${a.mark}</div>
+          <div><h3>${a.name}</h3><div class="cat">${a.ko} · ${a.cat}</div></div>
+        </div>
+        <div class="tags">${a.tags.map(t => `<span class="tag">${t}</span>`).join("")}</div>
+        <div class="plans">
+          ${a.plans.map(p => {
+            let price;
+            if (p.ask) price = `<div class="krw ask">견적 문의</div>`;
+            else if (p.krw != null) {
+              const v = cycle === "y" ? p.krwY : p.krw;
+              price = `<div class="krw">${won(v)}<small>${cycle === "y" ? "연 결제 시 · 월 환산" : "월 · 원화 정가"}</small></div>`;
+            } else {
+              const usd = cycle === "y" ? p.usdY : p.usd;
+              price = `<div class="krw">${p.from ? "<small style='display:inline'>부터 </small>" : ""}${won(fmt(usd * FX))}<small>$${usd} / 월${cycle === "y" && p.usdY !== p.usd ? " (연 결제)" : ""}</small></div>`;
+            }
+            return `<div class="plan${p.hi ? " hi" : ""}"><div class="n">${p.n}</div>${price}<div class="d">${p.d}</div></div>`;
+          }).join("")}
+        </div>
+        <div class="ai-foot">
+          <a class="src" href="${a.src}" target="_blank" rel="noopener">${a.src === SUPPORT ? "구성 안내 요청" : "공식 요금제 보기"}</a>
+          <a class="btn btn-ghost" href="${SUPPORT}" target="_blank" rel="noopener">${a.name} 견적 문의</a>
+        </div>
+      </article>`).join("");
+  }
+
+  document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => {
+    cycle = b.dataset.cycle;
+    document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+    render();
+  }));
+  render();
+</script>
+</body></html>
